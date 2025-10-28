@@ -24,7 +24,7 @@ namespace PVZRQoL
             }
         }
 
-        public static KeyCode[] keybinds =
+        public static KeyCode[] seedPacketKeybinds =
         {
             KeyCode.Alpha1,
             KeyCode.Alpha2,
@@ -37,6 +37,7 @@ namespace PVZRQoL
             KeyCode.Alpha9,
             KeyCode.Alpha0
         };
+        public static KeyCode shovelKeybind = KeyCode.Q;
 
         public override void OnInitializeMelon()
         {
@@ -62,12 +63,17 @@ namespace PVZRQoL
 
         public void ManageHotkeys()
         {
+            if (Input.GetKeyDown(shovelKeybind) && PVZEasyAPI.Board != null)
+            {
+                PVZEasyAPI.Board.PickUpTool(ReloadedObjectType.Shovel);
+            }
+
             if (currentSeeds != null)
             {
                 for (int i = 0; i < currentSeeds.GetPacketCount(); i++)
                 {
                     SeedPacket packet = currentSeeds.mSeedPackets[i];
-                    if (Input.GetKeyDown(keybinds[i]))
+                    if (Input.GetKeyDown(seedPacketKeybinds[i]))
                     {
                         if (packet.CanPickUp())
                         {
@@ -80,11 +86,12 @@ namespace PVZRQoL
                                 }
                                 packet.Selected(0, false);
                                 packet.Activated(0, false);
-                                return;
                             }
-                            packet.Deselected(0);
-                            packet.Activate();
-                            return;
+                            else
+                            {
+                                packet.Deselected(0);
+                                packet.Activate();
+                            }
                         }
                         else
                         {
